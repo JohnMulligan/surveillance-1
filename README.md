@@ -1,6 +1,7 @@
 # surveillance-1
 :exclamation: This is a read-only mirror of the CRAN R package repository.  surveillance — Temporal and Spatio-Temporal Modeling and Monitoring of Epidemic Phenomena. Homepage: http://surveillance.R-Forge.R-project.org/  
 
+![screenshot](https://raw.githubusercontent.com/JohnMulligan/surveillance-1/master/Rplot04.png)
 
 Creating a repo to store a customized version of the R epidemiological surveillance. Specifically, getting their graphs to output a confidence interval rather than just the upper bound of the CI in outbreak detection.
 
