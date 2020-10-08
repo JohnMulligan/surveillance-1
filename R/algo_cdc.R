@@ -37,6 +37,7 @@ algo.cdcLatestTimepoint <- function(disProgObj, timePoint = NULL, control = list
   # (we will use the prediction interval described in 
   # Farrington & Andrew (2003))
   upCi <- mean(basevec)+qnorm(1-control$alpha/2)*sd(basevec)*sqrt(1+1/length(basevec))
+  lowCi <- mean(basevec)+qnorm(control$alpha/2)*sd(basevec)*sqrt(1+1/length(basevec))
 
   #Counts for the current mounth
   yt0 <- sum(observed[timePoint:(timePoint-3)])

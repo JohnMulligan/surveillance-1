@@ -116,6 +116,16 @@ setReplaceMethod("upperbound", "sts", function(x, value) {
  x@upperbound <- value
  x
 })
+# lowerbound slot
+setGeneric("lowerbound", function(x) standardGeneric("lowerbound"))
+setMethod("lowerbound", "sts", function(x) {
+  return(x@lowerbound)
+})
+setGeneric("lowerbound<-", function(x, value) standardGeneric("lowerbound<-"))
+setReplaceMethod("lowerbound", "sts", function(x, value) {
+ x@lowerbound <- value
+ x
+})
 # population slot (actually its populationFrac)
 setGeneric("population", function(x) standardGeneric("population"))
 setMethod("population", "sts", function(x) {

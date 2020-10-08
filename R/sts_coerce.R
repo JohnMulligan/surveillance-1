@@ -64,6 +64,7 @@ as.data.frame.sts <- function(x, row.names = NULL, optional = FALSE, # from the 
                     "state" = x@state,
                     "alarm" = x@alarm,
                     "upperbound" = x@upperbound,
+                    "lowerbound" = x@lowerbound,
                     "population" = x@populationFrac,
                     check.names = FALSE)
 
@@ -72,9 +73,9 @@ as.data.frame.sts <- function(x, row.names = NULL, optional = FALSE, # from the 
     namesObs <- colnames(x@observed, do.NULL = FALSE, prefix = "observed")
     c(paste0("observed.", namesObs), "epoch",
       paste0("state.", namesObs), paste0("alarm.", namesObs),
-      paste0("upperbound.", namesObs), paste0("population.", namesObs))
+      paste0("upperbound.", namesObs), paste0("lowerbound.", namesObs), paste0("population.", namesObs))
   } else {
-    c("observed", "epoch", "state", "alarm", "upperbound", "population")
+    c("observed", "epoch", "state", "alarm", "upperbound", "lowerbound", "population")
   }
 
   #Find out how many epochs there are each year
@@ -105,7 +106,7 @@ setMethod("as.data.frame", signature(x = "sts"), as.data.frame.sts)
 tidy.sts <- function (x, ...)
 {
     unitNames <- colnames(x, do.NULL = FALSE, prefix = "observed")
-    v.names <- c("observed", "state", "alarm", "upperbound", "population")
+    v.names <- c("observed", "state", "alarm", "upperbound", "lowerbound", "population")
     stswide <- as.data.frame(x, tidy = FALSE, as.Date = FALSE)
     ## nrow(stswide) = nrow(x), i.e., one row per epoch
     stswide$year <- year(x)

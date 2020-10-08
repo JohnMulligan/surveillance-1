@@ -67,7 +67,7 @@ test_that("we can subset epochs of an \"sts\" object", {
 })
 
 test_that("colnames need to be identical (only for multivariate data)", {
-    slots_dn <- c("observed", "state", "alarm", "upperbound", "populationFrac")
+    slots_dn <- c("observed", "state", "alarm", "upperbound","lowerbound", "populationFrac")
     ## ignore colnames mismatch for univariate time series
     sts_args_1 <- lapply(setNames(nm = slots_dn), function (slot)
         matrix(0, 1, 1, dimnames = list(NULL, slot)))

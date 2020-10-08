@@ -342,6 +342,7 @@ algo.farrington <- function(disProgObj, control=list(
   alarm <- matrix(data = 0, nrow = length(control$range), ncol = 1)
   trend <- matrix(data = 0, nrow = length(control$range), ncol = 1)
   upperbound <- matrix(data = 0, nrow = length(control$range), ncol = 1)
+  lowerbound <- matrix(data = 0, nrow = length(control$range), ncol = 1)
   # predictive distribution
   pd <- matrix(data = 0, nrow = length(control$range), ncol = 2)
 
@@ -476,6 +477,7 @@ algo.farrington <- function(disProgObj, control=list(
     trend[k-min(control$range)+1] <- doTrend
     alarm[k-min(control$range)+1] <- (X>1)
     upperbound[k-min(control$range)+1] <- ifelse(enoughCases,lu[2],0)
+    lowerbound[k-min(control$range)+1] <- ifelse(enoughCases,lu[1],0)
     #Compute bounds of the predictive
     pd[k-min(control$range)+1,] <- lu[c(3,4)]
 
@@ -486,9 +488,9 @@ algo.farrington <- function(disProgObj, control=list(
   control$data <- paste(deparse(substitute(disProgObj)))
   #Add information about predictive distribution
   control$pd   <- pd
-
+  
   # return alarm and upperbound vectors
-  result <- list(alarm = alarm, upperbound = upperbound, trend=trend,
+  result <- list(alarm = alarm, upperbound = upperbound, lowerbound=lowerbound,
                  disProgObj=disProgObj, control=control)
   class(result) <- "survRes"
 

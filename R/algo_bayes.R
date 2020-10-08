@@ -48,7 +48,7 @@ algo.bayesLatestTimepoint <- function(disProgObj, timePoint = NULL, control = li
 
   # compute the upper limit of a one sided (1-alpha)*100% prediction interval.
   upPI <- qnbinom(1-control$alpha, sumBasevec + 1/2, (lengthBasevec)/(lengthBasevec + 1))
-
+  
   # give alarm if the actual value is larger than the upper limit.
   alarm <- observed[timePoint] > upPI
 

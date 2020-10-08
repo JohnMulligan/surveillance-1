@@ -88,6 +88,7 @@ algo.glrnb <- function(disProgObj,
   # start with cusum[timePoint -1] = 0, i.e. set cusum[1] = 0
   alarm <- matrix(data = 0, nrow = length(t), ncol = 1)
   upperbound <- matrix(data = 0, nrow = length(t), ncol = 1)
+  upperbound <- matrix(data = 0, nrow = length(t), ncol = 1)
 
 
   #Setup counters for the progress

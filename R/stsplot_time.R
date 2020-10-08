@@ -126,7 +126,9 @@ stsplot_time1 <- function(
     outbreak.symbol=list(pch=3, col=3, cex=1, lwd=1),
     alarm.symbol=list(pch=24, col=2, cex=1, lwd=1),
     legend.opts=list(),
-    dx.upperbound=0L, hookFunc=function(){}, .hookFuncInheritance=function() {}, ...)
+    dx.upperbound=0L,
+    dx.lowerbound=0L,
+    hookFunc=function(){}, .hookFuncInheritance=function() {}, ...)
 {
   stopifnot(length(k) == 1, is.character(k) || k != 0)
   
@@ -135,6 +137,7 @@ stsplot_time1 <- function(
   state      <- x@state[,k]
   alarm      <- x@alarm[,k]
   upperbound <- x@upperbound[,k]
+  lowerbound <- x@lowerbound[,k]
   population <- x@populationFrac[,k]
   binaryTS <- x@multinomialTS
 
@@ -144,6 +147,7 @@ stsplot_time1 <- function(
   if (binaryTS) {
     observed <- ifelse(population!=0,observed/population,0)
     upperbound <- ifelse(population!=0,upperbound/population,0)
+    lowerbound <- ifelse(population!=0,lowerbound/population,0)
     if (ylab == "No. infected") { ylab <- "Proportion infected" }
   }
   
@@ -167,10 +171,17 @@ stsplot_time1 <- function(
   # left/right help for constructing the columns
   dx.observed <- 0.5
   upperboundx <- (1:length(upperbound)) - (dx.observed - dx.upperbound)
+  lowerboundx <- (1:length(lowerbound)) - (dx.observed - dx.lowerbound)
   
   #Generate the matrices to plot (values,last value)
-  xstuff <- cbind(c(upperboundx,length(observed) + min(1-(dx.observed - dx.upperbound),0.5)))
-  ystuff <-cbind(c(upperbound,upperbound[length(observed) ]))
+  xstuff <- cbind(c(upperboundx,length(observed) + min(1-(dx.observed - dx.upperbound),0.5)),c(lowerboundx,length(observed) + min(1-(dx.observed - dx.lowerbound),0.5)))
+  
+  print(upperboundx)
+  print(lowerboundx)
+  print(min(1-(dx.observed - dx.upperbound),0.5))
+  print(upperbound[length(observed) ])
+  
+  ystuff <-cbind(c(upperbound,upperbound[length(observed) ]),c(lowerbound,lowerbound[length(observed) ]))
 
   #Plot the results 
   matplot(x=xstuff,y=ystuff,xlab=xlab,ylab=ylab,main=main,ylim=ylim,axes = !(xaxis.dates),type=type,lty=lty[-c(1:2)],col=col[-c(1:2)],lwd=lwd[-c(1:2)],...)
@@ -186,6 +197,8 @@ stsplot_time1 <- function(
   if (!is.na(col[1])) {
     lines(x=xstuff,y=ystuff,type=type,lty=lty[-c(1:2)],col=col[-c(1:2)],lwd=lwd[-c(1:2)],...)
   }
+  
+
   
   #Draw alarm symbols
   alarmIdx <- which(!is.na(alarm) & (alarm == 1))
@@ -260,6 +273,7 @@ stsplot_alarm <- function(
   state      <- x@state[,k]
   alarm      <- x@alarm[,k]
   upperbound <- x@upperbound[,k]
+  lowerbound <- x@lowerbound[,k]
   ylim <- c(0.5, ncol(x))
   
   ##### Handle the NULL arguments ######################################
@@ -279,6 +293,7 @@ stsplot_alarm <- function(
   observedxl <- (1:length(observed))-dx.observed
   observedxr <- (1:length(observed))+dx.observed
   upperboundx <- (1:length(upperbound)) #-0.5
+  lowerboundx <- (1:length(lowerbound))
   
   # control where the highest value is
   max <- max(c(observed,upperbound),na.rm=TRUE)
@@ -290,8 +305,8 @@ stsplot_alarm <- function(
 
 
   #Generate the matrices to plot
-  xstuff <- cbind(observedxl, observedxr, upperboundx)
-  ystuff <-cbind(observed, observed, upperbound)
+  xstuff <- cbind(observedxl, observedxr, upperboundx,lowerboundx)
+  ystuff <-cbind(observed, observed, upperbound,lowerbound)
         
 
   #Plot the results using one Large plot call (we do this by modifying

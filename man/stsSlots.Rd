@@ -4,6 +4,8 @@
 \alias{alarms<-}
 \alias{upperbound}
 \alias{upperbound<-}
+\alias{lowerbound}
+\alias{lowerbound<-}
 \alias{control}
 \alias{control<-}
 \alias{epoch}

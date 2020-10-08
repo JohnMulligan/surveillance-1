@@ -17,7 +17,7 @@ plot.survRes.one <- function(x, method=x$control$name, disease=x$control$data, d
   observedxl <- (1:length(observed))-tab
   observedxr <- (1:length(observed))+tab
   upperboundx <- (1:length(survResObj$upperbound)) #-0.5
-
+  
   # control where the highest value is
   max <- max(max(observed),max(survResObj$upperbound))
 

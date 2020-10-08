@@ -19,7 +19,7 @@ fix.dimnames <- function(x) {
   dn <- dimnames(x@observed)
   #Make sure all arrays have the same dimnames
   dimnames(x@alarm) <- dimnames(x@state) <- dimnames(x@upperbound) <-
-    dimnames(x@populationFrac) <- dn
+    dimnames(x@populationFrac) <- dimnames(x@lowerbound) <- dn
   #Special for neighbourhood
   dimnames(x@neighbourhood) <- dn[c(2L,2L)]
   return(x)
@@ -71,6 +71,7 @@ init.sts <- function(.Object, ..., # also for slots of classes extending "sts"
                      state = matrix(FALSE, nTime, nUnit),
                      alarm = matrix(NA, nTime, nUnit),
                      upperbound = matrix(NA_real_, nTime, nUnit),
+                     lowerbound = matrix(NA_real_, nTime, nUnit),
                      neighbourhood = matrix(NA, nUnit, nUnit),
                      populationFrac = matrix(1/nUnit, nTime, nUnit),
                      ## FIXME: change default to a matrix of NA_real_ ?
@@ -108,6 +109,7 @@ init.sts <- function(.Object, ..., # also for slots of classes extending "sts"
     state <- as.matrix(state)
     alarm <- as.matrix(alarm)
     upperbound <- as.matrix(upperbound)
+    lowerbound <- as.matrix(lowerbound)
 
     ## clear rownames and set colnames for the matrix of observed counts
     if (is.null(namesObs <- colnames(observed))){
@@ -136,7 +138,7 @@ init.sts <- function(.Object, ..., # also for slots of classes extending "sts"
     ## using the default initialize-method
     .Object <- callNextMethod(.Object, ...,
                               observed=observed, epoch=epoch,
-                              state=state, alarm=alarm, upperbound=upperbound,
+                              state=state, alarm=alarm, upperbound=upperbound, lowerbound=lowerbound,
                               neighbourhood=neighbourhood,
                               populationFrac=populationFrac)
     ## this also checks validObject(.Object)
@@ -175,7 +177,7 @@ sts2disProg <- function(sts) {
   disProgObj <- create.disProg(week=sts@epoch, start=sts@start, freq=sts@freq,
                                observed=sts@observed, state=sts@state, neighbourhood=sts@neighbourhood,
                                populationFrac=sts@populationFrac, epochAsDate=sts@epochAsDate)
-  #For survRes: alarm=sts@alarm, upperbound=sts@upperbound)
+  #For survRes: alarm=sts@alarm, upperbound=sts@upperbound,lowerbound=sts@lowerbound)
   return(disProgObj)
 }
 
@@ -224,6 +226,7 @@ aggregate.sts <- function(x, by="time", nfreq="all", ...)
     x@state <- as.matrix(aggregate(x@state,by=list(new),sum)[,-1])>0
     x@alarm <- as.matrix(aggregate(x@alarm,by=list(new),sum)[,-1]) # number of alarms
     x@upperbound <- as.matrix(aggregate(x@upperbound,by=list(new),sum)[,-1])
+    x@lowerbound <- as.matrix(aggregate(x@lowerbound,by=list(new),sum)[,-1])
 
     ## summing population (fractions) over time
     had_fractions <- !x@multinomialTS && all(rowSums(x@populationFrac) == 1)
@@ -241,6 +244,7 @@ aggregate.sts <- function(x, by="time", nfreq="all", ...)
     x@alarm <- as.matrix(rowSums(x@alarm))>0 # contrary to counting for by="time"!
     #There is no clever way to aggregate the upperbounds
     x@upperbound <- matrix(NA_real_,ncol=ncol(x@alarm),nrow=nrow(x@alarm))
+    x@lowerbound <- matrix(NA_real_,ncol=ncol(x@alarm),nrow=nrow(x@alarm))
     x@populationFrac <- as.matrix(rowSums(x@populationFrac))
     x@neighbourhood <- matrix(NA, 1, 1) # consistent with default for new("sts")
     ## we have lost colnames
@@ -326,6 +330,7 @@ setMethod("[", "sts", function(x, i, j, ..., drop) {
     x@populationFrac <- x@populationFrac / rowSums(x@populationFrac)
    }
   x@upperbound <- x@upperbound[i,j,drop=FALSE]
+  x@lowerbound <- x@lowerbound[i,j,drop=FALSE]
 
   #Neighbourhood matrix
   if (ncol(x@observed) != ncol(x@neighbourhood) &&  # selected units

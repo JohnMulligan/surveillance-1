@@ -22,6 +22,7 @@ wrap.algo <- function(sts, algo, control,
   #Set old alarms and upperbounds to NA
   sts@alarm[] <- NA
   sts@upperbound[] <- NA_real_
+  sts@lowerbound[] <- NA_real_
 
   #Loop over all regions
   for (k in 1:nAreas) {
@@ -40,6 +41,7 @@ wrap.algo <- function(sts, algo, control,
     if (!is.null(survRes.k)) {
       sts@alarm[control$range,k] <- survRes.k$alarm
       sts@upperbound[control$range,k] <- survRes.k$upperbound
+      sts@lowerbound[control$range,k] <- survRes.k$lowerbound
     }
   }
   #Control object needs only to be set once

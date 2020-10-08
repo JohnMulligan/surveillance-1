@@ -10,6 +10,7 @@
         state = "matrix",
         alarm = "matrix",
         upperbound = "matrix",
+        lowerbound = "matrix",
         neighbourhood = "matrix",
         populationFrac = "matrix",
         map = "SpatialPolygons",
@@ -65,7 +66,7 @@
         )
         ## detect mismatch in column names between different slots
         if (dimObserved[2L] > 1 && !is.null(namesObserved)) {
-            slots_dn <- c("state", "alarm", "upperbound", "populationFrac", "neighbourhood")
+            slots_dn <- c("state", "alarm", "upperbound", "lowerbound", "populationFrac", "neighbourhood")
             errors_dn <- lapply(slots_dn, function (name) {
                 cn <- colnames(slot(object, name))
                 if (!is.null(cn) && !identical(cn, namesObserved))

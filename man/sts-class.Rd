@@ -8,6 +8,8 @@
 \alias{alarms<-,sts-method}
 \alias{upperbound,sts-method}
 \alias{upperbound<-,sts-method}
+\alias{lowerbound,sts-method}
+\alias{lowerbound<-,sts-method}
 \alias{control,sts-method}
 \alias{control<-,sts-method}
 \alias{epoch,sts-method}
